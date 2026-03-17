@@ -19,8 +19,9 @@ export interface StaffBest {
 export interface Member {
   name: string;
   role: string;
-  photoUrl: string;
-  bio: string;
+  photoUrl?: string;
+  bio?: string;
+  nim?: string;
 }
 
 export interface Organization {

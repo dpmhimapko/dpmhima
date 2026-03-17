@@ -77,7 +77,7 @@ const Profile = () => {
         >
           <h3 className="text-3xl font-bold mb-6">Visi</h3>
           <p className="text-gray-300 text-lg italic leading-relaxed">
-            "Menjadi organisasi kemahasiswaan yang unggul, berintegritas, dan inovatif dalam mewujudkan kesejahteraan serta prestasi mahasiswa di tingkat nasional."
+            "Membangun lembaga yang aspiratif bagi mahasiswa dengan mengedepankan kolektif suara dalam pengambilan keputusan yang transparan, adaptif dan fleksibel untuk mahasiswa dalam meningkatkan kolaborasi agar mampu menjadi tempat untuk tumbuh, berkembang, belajar, dan berdinamika bagi seluruh mahasiswa Pendidikan Kepelatihan Olahraga FPOK UPI"
           </p>
         </motion.div>
         <motion.div 
@@ -88,14 +88,14 @@ const Profile = () => {
           <h3 className="text-3xl font-bold mb-6 text-secondary">Misi</h3>
           <ul className="space-y-4 text-gray-600">
             {[
-              'Mengoptimalkan peran himpunan sebagai wadah aspirasi.',
-              'Menyelenggarakan kegiatan yang menunjang kompetensi akademik.',
-              'Mempererat tali persaudaraan antar mahasiswa.',
-              'Membangun kerjasama strategis dengan pihak eksternal.'
+              'Mengembangkan budaya organisasi yang transparan, adaptif, dan fleksibel.',
+              'Mendorong kolaborasi yang sinergis dan profesional.',
+              'Optimalisasi peran DPM HIMA PKO sebagai lembaga yang aspiratif menyuarakan, menyalurkan dan mengadvokasi ide, aspirasi, dan inovasi mahasiwa.',
+              'Menciptakan jaringan komunikasi dan organisasi yang baik dikalangan mahasiswa pendidikan kepelatihan olahraga.'
             ].map((misi, i) => (
-              <li key={i} className="flex items-center gap-3">
-                <div className="w-2 h-2 bg-primary rounded-full"></div>
-                {misi}
+              <li key={i} className="flex items-start gap-3">
+                <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                <span>{misi}</span>
               </li>
             ))}
           </ul>

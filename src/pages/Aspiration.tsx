@@ -46,7 +46,7 @@ const AspirationPage = () => {
           <div>
             <h1 className="text-4xl font-bold text-secondary mb-4">Suarakan Aspirasimu</h1>
             <p className="text-gray-600 text-lg">
-              Kami percaya bahwa setiap suara berharga. Sampaikan saran, kritik, atau keluhanmu untuk HIMAPKO yang lebih baik.
+              Kami percaya bahwa setiap suara berharga. Sampaikan saran, kritik, atau keluhanmu untuk DPM HIMA PKO yang lebih baik.
             </p>
             <div className="w-20 h-1 bg-primary mt-6"></div>
           </div>
@@ -55,27 +55,11 @@ const AspirationPage = () => {
             <Info className="w-6 h-6 text-blue-600 flex-shrink-0" />
             <div className="text-sm text-blue-800">
               <p className="font-bold mb-1">Privasi Terjamin</p>
-              <p>Data yang kamu kirimkan akan dikelola secara profesional oleh tim admin HIMAPKO dan diteruskan ke pihak terkait.</p>
+              <p>Data yang kamu kirimkan akan dikelola secara profesional oleh tim admin DPM HIMA PKO dan diteruskan ke pihak terkait.</p>
             </div>
           </div>
 
           <div className="space-y-6">
-            <h3 className="text-xl font-bold text-secondary">Alur Aspirasi:</h3>
-            <div className="space-y-4">
-              {[
-                { step: '01', title: 'Pengisian Form', desc: 'Isi data diri dan pesan aspirasi dengan jelas.' },
-                { step: '02', title: 'Verifikasi Admin', desc: 'Tim admin akan meninjau aspirasi yang masuk.' },
-                { step: '03', title: 'Tindak Lanjut', desc: 'Aspirasi akan diteruskan ke divisi terkait atau birokrasi.' },
-              ].map((item, idx) => (
-                <div key={idx} className="flex gap-4">
-                  <div className="text-2xl font-black text-primary/20">{item.step}</div>
-                  <div>
-                    <h4 className="font-bold text-secondary">{item.title}</h4>
-                    <p className="text-sm text-gray-500">{item.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
 

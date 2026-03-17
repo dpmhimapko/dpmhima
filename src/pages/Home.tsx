@@ -25,7 +25,7 @@ const Home = () => {
             transition={{ duration: 0.8 }}
             className="text-5xl md:text-7xl font-bold text-white mb-6"
           >
-            Selamat Datang di <span className="text-primary">HIMAPKO</span>
+            Selamat Datang di <span className="text-primary">DPM HIMA PKO</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 30 }}
@@ -61,7 +61,7 @@ const Home = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
             { title: 'Berita Terkini', desc: 'Dapatkan informasi terbaru seputar kampus dan himpunan.', icon: Newspaper, link: '/berita', color: 'bg-blue-50 text-blue-600' },
-            { title: 'Struktur Organisasi', desc: 'Kenali wajah-wajah di balik layar kepengurusan HIMAPKO.', icon: Users, link: '/struktur', color: 'bg-red-50 text-primary' },
+            { title: 'Struktur Organisasi', desc: 'Kenali wajah-wajah di balik layar kepengurusan DPM HIMA PKO.', icon: Users, link: '/struktur', color: 'bg-red-50 text-primary' },
             { title: 'Layanan Aspirasi', desc: 'Suarakan pendapatmu untuk perubahan yang lebih baik.', icon: MessageSquare, link: '/aspirasi', color: 'bg-green-50 text-green-600' },
           ].map((item, idx) => (
             <motion.div
@@ -96,7 +96,7 @@ const Home = () => {
           <div className="flex-1 space-y-6">
             <h2 className="text-3xl font-bold text-secondary">Visi & Misi Kami</h2>
             <p className="text-gray-600 leading-relaxed">
-              HIMAPKO berkomitmen untuk menjadi organisasi yang inklusif, transparan, dan progresif. Kami percaya bahwa setiap mahasiswa memiliki potensi besar yang perlu didukung melalui wadah yang tepat.
+              DPM HIMA PKO berkomitmen untuk menjadi organisasi yang inklusif, transparan, dan progresif. Kami percaya bahwa setiap mahasiswa memiliki potensi besar yang perlu didukung melalui wadah yang tepat.
             </p>
             <ul className="space-y-4">
               {[

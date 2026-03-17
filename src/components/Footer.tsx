@@ -7,7 +7,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <h3 className="text-xl font-bold mb-4">HIMAPKO</h3>
+            <h3 className="text-xl font-bold mb-4">DPM HIMA PKO</h3>
             <p className="text-gray-400 text-sm">
               Himpunan Mahasiswa yang berdedikasi untuk kemajuan dan aspirasi seluruh anggotanya.
             </p>
@@ -32,7 +32,7 @@ const Footer = () => {
         </div>
         <div className="mt-12 pt-8 border-t border-gray-800 text-center text-gray-500 text-xs">
           <p className="flex items-center justify-center gap-1">
-            Made with <Heart className="w-3 h-3 text-primary fill-current" /> by HIMAPKO Tech Team &copy; {new Date().getFullYear()}
+            Made with <Heart className="w-3 h-3 text-primary fill-current" /> by DPM HIMA PKO Tech Team &copy; {new Date().getFullYear()}
           </p>
         </div>
       </div>

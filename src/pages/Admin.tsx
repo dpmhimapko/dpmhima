@@ -145,7 +145,7 @@ const AdminPage = () => {
             <Lock className="w-8 h-8" />
           </div>
           <h1 className="text-2xl font-bold text-secondary mb-2">Admin Portal</h1>
-          <p className="text-gray-500 mb-8 text-sm">Khusus pengurus HIMAPKO yang terdaftar.</p>
+          <p className="text-gray-500 mb-8 text-sm">Khusus pengurus DPM HIMA PKO yang terdaftar.</p>
           
           {user ? (
             <div className="space-y-4">
@@ -307,7 +307,23 @@ const AdminPage = () => {
 
           {activeTab === 'org' && (
             <div className="space-y-8">
-              <h2 className="text-2xl font-bold">Kelola Struktur Organisasi</h2>
+              <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-bold">Kelola Struktur Organisasi</h2>
+                <button 
+                  onClick={async () => {
+                    if (confirm('Ini akan menambahkan struktur organisasi awal. Lanjutkan?')) {
+                      const { INITIAL_STRUCTURE } = await import('../constants/structure');
+                      for (const div of INITIAL_STRUCTURE) {
+                        await orgService.add(div);
+                      }
+                      alert('Struktur organisasi berhasil diinisialisasi!');
+                    }
+                  }}
+                  className="flex items-center gap-2 px-4 py-2 bg-secondary text-white rounded-xl text-sm font-bold hover:bg-black transition-all"
+                >
+                  <RefreshCw className="w-4 h-4" /> Inisialisasi Struktur
+                </button>
+              </div>
               <form onSubmit={async (e) => {
                 e.preventDefault();
                 await orgService.add({ ...orgForm, members: [] });

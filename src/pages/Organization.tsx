@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Users, ChevronRight, X, User as UserIcon } from 'lucide-react';
+import { Users, ChevronRight, X, User as UserIcon, CreditCard } from 'lucide-react';
 import { orgService } from '../services';
 import { Organization as OrgType, Member } from '../types';
+import { INITIAL_STRUCTURE } from '../constants/structure';
 
 const OrganizationPage = () => {
   const [divisions, setDivisions] = useState<OrgType[]>([]);
@@ -10,7 +11,14 @@ const OrganizationPage = () => {
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
 
   useEffect(() => {
-    const unsubscribe = orgService.subscribe(setDivisions);
+    const unsubscribe = orgService.subscribe((data) => {
+      if (data.length === 0) {
+        // Use initial structure if database is empty
+        setDivisions(INITIAL_STRUCTURE.map((d, i) => ({ ...d, id: `init-${i}` } as OrgType)));
+      } else {
+        setDivisions(data);
+      }
+    });
     return () => unsubscribe();
   }, []);
 
@@ -18,7 +26,7 @@ const OrganizationPage = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
       <div className="text-center mb-16">
         <h1 className="text-4xl font-bold text-secondary mb-4">Struktur Organisasi</h1>
-        <p className="text-gray-600">Kenali tim hebat di balik setiap program kerja HIMAPKO.</p>
+        <p className="text-gray-600">Kenali tim hebat di balik setiap program kerja DPM HIMA PKO.</p>
         <div className="w-20 h-1 bg-primary mx-auto mt-4"></div>
       </div>
 
@@ -138,7 +146,13 @@ const OrganizationPage = () => {
               </div>
               <div className="pt-16 pb-8 px-8 text-center">
                 <h3 className="text-2xl font-bold text-secondary">{selectedMember.name}</h3>
-                <p className="text-primary font-semibold mb-4">{selectedMember.role}</p>
+                <p className="text-primary font-semibold mb-2">{selectedMember.role}</p>
+                {selectedMember.nim && (
+                  <div className="flex items-center justify-center gap-2 text-gray-400 text-sm mb-4">
+                    <CreditCard className="w-4 h-4" />
+                    <span>{selectedMember.nim}</span>
+                  </div>
+                )}
                 <div className="w-12 h-1 bg-gray-100 mx-auto mb-6"></div>
                 <p className="text-gray-600 text-sm leading-relaxed italic">
                   {selectedMember.bio || "Tidak ada biografi tersedia."}
