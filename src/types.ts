@@ -1,0 +1,41 @@
+export interface News {
+  id: string;
+  title: string;
+  content: string;
+  imageUrl: string;
+  date: string;
+  author: string;
+}
+
+export interface StaffBest {
+  id: string;
+  month: string;
+  division: string;
+  name: string;
+  type: 'staff' | 'chair';
+  imageUrl: string;
+}
+
+export interface Member {
+  name: string;
+  role: string;
+  photoUrl: string;
+  bio: string;
+}
+
+export interface Organization {
+  id: string;
+  divisionName: string;
+  groupPhoto: string;
+  members: Member[];
+}
+
+export interface Aspiration {
+  id: string;
+  nama: string;
+  nim: string;
+  subject: string;
+  message: string;
+  timestamp: string;
+  status: 'new' | 'read' | 'archived';
+}

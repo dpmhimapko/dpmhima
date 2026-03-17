@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #8B0000; /* Merah Ati */
+  --color-secondary: #000000;
+  --color-accent: #FFFFFF;
+  
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-white text-secondary antialiased;
+    background-image: radial-gradient(circle at 50% 50%, rgba(139, 0, 0, 0.05) 0%, transparent 100%);
+  }
+}
+
+.glass-nav {
+  @apply bg-white/70 backdrop-blur-md border-b border-white/20 sticky top-0 z-50;
+}
+
+.card-hover {
+  @apply transition-all duration-300 hover:-translate-y-2 hover:shadow-xl;
+}
+
+.img-zoom-container {
+  @apply overflow-hidden rounded-lg;
+}
+
+.img-zoom {
+  @apply transition-transform duration-500 hover:scale-110;
+}
+
+.markdown-body h1 { @apply text-2xl font-bold mb-4; }
+.markdown-body p { @apply mb-4 leading-relaxed; }
+.markdown-body ul { @apply list-disc ml-6 mb-4; }
+

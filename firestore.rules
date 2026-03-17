@@ -1,0 +1,45 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+         request.auth.token.email == "aahdan298@gmail.com");
+    }
+
+    // News: Everyone can read, only admin can write
+    match /news/{newsId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Staff Best: Everyone can read, only admin can write
+    match /staff_best/{staffId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Organization: Everyone can read, only admin can write
+    match /organization/{orgId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Aspirations: Everyone can create, only admin can read/write
+    match /aspirations/{aspId} {
+      allow create: if true;
+      allow read, write: if isAdmin();
+    }
+
+    // Users: Users can read/write their own profile, admin can read all
+    match /users/{userId} {
+      allow read, write: if isAuthenticated() && request.auth.uid == userId;
+      allow read: if isAdmin();
+    }
+  }
+}

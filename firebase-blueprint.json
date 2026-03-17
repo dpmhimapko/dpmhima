@@ -1,0 +1,72 @@
+{
+  "entities": {
+    "News": {
+      "title": "News",
+      "description": "Berita dan kegiatan himpunan",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Judul berita" },
+        "content": { "type": "string", "description": "Isi berita dalam markdown" },
+        "imageUrl": { "type": "string", "description": "URL gambar berita" },
+        "date": { "type": "string", "format": "date-time", "description": "Tanggal publikasi" },
+        "author": { "type": "string", "description": "Penulis berita" }
+      },
+      "required": ["title", "content", "date"]
+    },
+    "StaffBest": {
+      "title": "Staff Best",
+      "description": "Staff dan Ketua terbaik bulanan",
+      "type": "object",
+      "properties": {
+        "month": { "type": "string", "enum": ["Januari", "Februari", "Maret", "April", "Mei", "Juni"], "description": "Bulan penghargaan" },
+        "division": { "type": "string", "description": "Divisi asal" },
+        "name": { "type": "string", "description": "Nama penerima" },
+        "type": { "type": "string", "enum": ["staff", "chair"], "description": "Kategori (Staff/Ketua)" },
+        "imageUrl": { "type": "string", "description": "Foto penerima" }
+      },
+      "required": ["month", "division", "name", "type"]
+    },
+    "Organization": {
+      "title": "Organization",
+      "description": "Struktur organisasi per divisi",
+      "type": "object",
+      "properties": {
+        "divisionName": { "type": "string", "description": "Nama divisi" },
+        "groupPhoto": { "type": "string", "description": "Foto bersama divisi" },
+        "members": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "role": { "type": "string" },
+              "photoUrl": { "type": "string" },
+              "bio": { "type": "string" }
+            }
+          }
+        }
+      },
+      "required": ["divisionName", "groupPhoto"]
+    },
+    "Aspiration": {
+      "title": "Aspiration",
+      "description": "Aspirasi mahasiswa",
+      "type": "object",
+      "properties": {
+        "nama": { "type": "string" },
+        "nim": { "type": "string" },
+        "subject": { "type": "string" },
+        "message": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["new", "read", "archived"] }
+      },
+      "required": ["nama", "nim", "subject", "message", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/news": { "schema": "News", "description": "Koleksi berita" },
+    "/staff_best": { "schema": "StaffBest", "description": "Koleksi staff terbaik" },
+    "/organization": { "schema": "Organization", "description": "Koleksi struktur organisasi" },
+    "/aspirations": { "schema": "Aspiration", "description": "Koleksi aspirasi masuk" }
+  }
+}
