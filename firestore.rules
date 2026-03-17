@@ -1,45 +1,91 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Helper functions
+    
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
     function isAuthenticated() {
       return request.auth != null;
     }
     
-    function isAdmin() {
-      return isAuthenticated() && 
-        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
-         request.auth.token.email == "aahdan298@gmail.com");
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
     }
 
-    // News: Everyone can read, only admin can write
+    function isAdmin() {
+      return isAuthenticated() && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'superadmin'] &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isApproved == true;
+    }
+
+    function isSuperAdmin() {
+      return isAuthenticated() && 
+        (request.auth.token.email == "aahdan298@gmail.com" || 
+         (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'superadmin'));
+    }
+
+    // ===============================================================
+    // Validation Functions
+    // ===============================================================
+    function isValidAspiration(data) {
+      return data.nama is string && data.nama.size() > 0 && data.nama.size() < 100 &&
+             data.message is string && data.message.size() > 0 && data.message.size() < 2000;
+    }
+
+    function isValidNews(data) {
+      return data.title is string && data.title.size() > 0 && data.title.size() < 200 &&
+             data.content is string && data.content.size() > 0;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    // News
     match /news/{newsId} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // Staff Best: Everyone can read, only admin can write
+    // Staff Best
     match /staff_best/{staffId} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // Organization: Everyone can read, only admin can write
+    // Organization
     match /organization/{orgId} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // Aspirations: Everyone can create, only admin can read/write
+    // Aspirations
     match /aspirations/{aspId} {
-      allow create: if true;
-      allow read, write: if isAdmin();
+      allow create: if isValidAspiration(request.resource.data);
+      allow read, update, delete: if isAdmin();
     }
 
-    // Users: Users can read/write their own profile, admin can read all
+    // Users
     match /users/{userId} {
-      allow read, write: if isAuthenticated() && request.auth.uid == userId;
-      allow read: if isAdmin();
+      // User can read their own profile, SuperAdmin can read all
+      allow read: if isOwner(userId) || isSuperAdmin();
+      
+      // User can create their initial profile (must be pending, unless it's the superadmin email)
+      allow create: if isOwner(userId) && 
+                      (
+                        (request.resource.data.role == 'pending' && request.resource.data.isApproved == false) ||
+                        (request.auth.token.email == "aahdan298@gmail.com" && request.resource.data.role == 'superadmin' && request.resource.data.isApproved == true)
+                      );
+      
+      // SuperAdmin can update any user's role and approval status
+      // User can update their own non-sensitive info (optional, but here we restrict to SuperAdmin for role changes)
+      allow update: if isSuperAdmin() || (isOwner(userId) && request.resource.data.role == resource.data.role);
+      
+      // SuperAdmin can delete users
+      allow delete: if isSuperAdmin();
     }
   }
 }

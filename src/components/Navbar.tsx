@@ -21,9 +21,17 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <Link to="/" className="flex-shrink-0 flex items-center gap-2">
-              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold">H</div>
-              <span className="text-primary font-bold text-xl tracking-tight">HIMAPKO</span>
+            <Link to="/" className="flex-shrink-0 flex items-center gap-3">
+              <img 
+                src="https://lh3.googleusercontent.com/d/1zrA4l4_KDja1efdj-f0tQKUV1CN11a8Z" 
+                alt="Logo DPM" 
+                className="w-12 h-12 object-contain"
+                referrerPolicy="no-referrer"
+              />
+              <div className="flex flex-col">
+                <span className="text-primary font-bold text-lg leading-tight">DPM HIMA PKO</span>
+                <span className="text-secondary text-[10px] font-medium tracking-wider uppercase">Parlemen Ressilience 2025/2026</span>
+              </div>
             </Link>
           </div>
           <div className="hidden md:block">

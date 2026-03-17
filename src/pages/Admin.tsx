@@ -201,7 +201,7 @@ const AdminPage = () => {
             { id: 'staff', label: 'Staff Terbaik', icon: Trophy },
             { id: 'org', label: 'Organisasi', icon: Users },
             { id: 'asp', label: 'Aspirasi', icon: MessageSquare },
-            ...(isSuperAdmin ? [{ id: 'users', label: 'Kelola Admin', icon: Shield }] : []),
+            ...(isAuthorized ? [{ id: 'users', label: 'Kelola Admin', icon: Shield }] : []),
           ].map((tab) => (
             <button
               key={tab.id}
@@ -363,61 +363,6 @@ const AdminPage = () => {
                 </button>
               </div>
 
-              {/* Manual Add Form */}
-              <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
-                <h3 className="font-bold text-secondary flex items-center gap-2">
-                  <Plus className="w-4 h-4" /> Tambah Aspirasi Manual
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <input 
-                    type="text" 
-                    placeholder="Nama Mahasiswa"
-                    value={aspForm.nama}
-                    onChange={(e) => setAspForm({...aspForm, nama: e.target.value})}
-                    className="px-4 py-2 rounded-xl border border-gray-200 outline-none focus:border-primary text-sm"
-                  />
-                  <input 
-                    type="text" 
-                    placeholder="NIM"
-                    value={aspForm.nim}
-                    onChange={(e) => setAspForm({...aspForm, nim: e.target.value})}
-                    className="px-4 py-2 rounded-xl border border-gray-200 outline-none focus:border-primary text-sm"
-                  />
-                  <input 
-                    type="text" 
-                    placeholder="Subjek/Judul"
-                    value={aspForm.subject}
-                    onChange={(e) => setAspForm({...aspForm, subject: e.target.value})}
-                    className="px-4 py-2 rounded-xl border border-gray-200 outline-none focus:border-primary text-sm md:col-span-2"
-                  />
-                  <textarea 
-                    placeholder="Isi Aspirasi"
-                    value={aspForm.message}
-                    onChange={(e) => setAspForm({...aspForm, message: e.target.value})}
-                    className="px-4 py-2 rounded-xl border border-gray-200 outline-none focus:border-primary text-sm md:col-span-2 h-24"
-                  />
-                </div>
-                <button 
-                  onClick={async () => {
-                    if (!aspForm.nama || !aspForm.message) return alert('Nama dan Pesan wajib diisi!');
-                    try {
-                      await aspirationService.add({
-                        ...aspForm,
-                        timestamp: new Date().toISOString(),
-                        status: 'read'
-                      });
-                      setAspForm({ nama: '', nim: '', subject: '', message: '' });
-                      alert('Aspirasi manual berhasil ditambahkan!');
-                    } catch (err) {
-                      console.error(err);
-                    }
-                  }}
-                  className="bg-secondary text-white px-6 py-2 rounded-xl font-bold text-sm hover:bg-black transition-all"
-                >
-                  Simpan Aspirasi
-                </button>
-              </div>
-
               <div className="space-y-4">
                 {asps.length > 0 ? asps.map(a => (
                   <div key={a.id} className={`p-6 border rounded-2xl space-y-4 transition-all ${a.status === 'new' ? 'border-primary bg-red-50/30' : 'border-gray-100'}`}>
@@ -427,7 +372,9 @@ const AdminPage = () => {
                           <h4 className="font-bold text-secondary">{a.subject}</h4>
                           {a.status === 'new' && <span className="bg-primary text-white text-[10px] px-2 py-0.5 rounded-full">Baru</span>}
                         </div>
-                        <p className="text-xs text-gray-500">Dari: {a.nama} ({a.nim}) • {new Date(a.timestamp).toLocaleString()}</p>
+                        <p className="text-xs text-gray-500">
+                          Dari: {a.isAnonymous ? 'Anonim' : `${a.nama} (${a.nim})`} • {new Date(a.timestamp).toLocaleString()}
+                        </p>
                       </div>
                       <div className="flex gap-2">
                         {a.status === 'new' ? (
@@ -448,8 +395,10 @@ const AdminPage = () => {
                             if (confirm('Hapus aspirasi ini?')) {
                               try {
                                 await aspirationService.delete(a.id);
+                                alert('Aspirasi berhasil dihapus');
                               } catch (err) {
                                 console.error(err);
+                                alert('Gagal menghapus aspirasi. Periksa koneksi atau izin Anda.');
                               }
                             }
                           }}
@@ -473,9 +422,10 @@ const AdminPage = () => {
               </div>
             </div>
           )}
-          {activeTab === 'users' && isSuperAdmin && (
+          {activeTab === 'users' && isAuthorized && (
             <div className="space-y-8">
               <h2 className="text-2xl font-bold">Manajemen Admin</h2>
+              <p className="text-sm text-gray-500">Daftar pengurus yang memiliki akses ke dashboard admin.</p>
               <div className="grid grid-cols-1 gap-4">
                 {allUsers.map(u => (
                   <div key={u.uid} className="bg-white p-6 rounded-2xl border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
@@ -500,7 +450,7 @@ const AdminPage = () => {
                       </div>
                     </div>
                     
-                    {u.email !== 'aahdan298@gmail.com' && (
+                    {u.email !== 'aahdan298@gmail.com' && isSuperAdmin && (
                       <div className="flex gap-2">
                         {!u.isApproved ? (
                           <button 

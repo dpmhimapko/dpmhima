@@ -8,7 +8,8 @@ const AspirationPage = () => {
     nama: '',
     nim: '',
     subject: '',
-    message: ''
+    message: '',
+    isAnonymous: false
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -22,11 +23,13 @@ const AspirationPage = () => {
     try {
       await aspirationService.add({
         ...formData,
+        nama: formData.isAnonymous ? 'Anonim' : formData.nama,
+        nim: formData.isAnonymous ? '-' : formData.nim,
         timestamp: new Date().toISOString(),
         status: 'new'
       });
       setIsSuccess(true);
-      setFormData({ nama: '', nim: '', subject: '', message: '' });
+      setFormData({ nama: '', nim: '', subject: '', message: '', isAnonymous: false });
     } catch (err) {
       setError('Gagal mengirim aspirasi. Silakan coba lagi nanti.');
       console.error(err);
@@ -98,30 +101,45 @@ const AspirationPage = () => {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700">Nama Lengkap</label>
-                  <input 
-                    required
-                    type="text"
-                    value={formData.nama}
-                    onChange={(e) => setFormData({...formData, nama: e.target.value})}
-                    placeholder="Contoh: Budi Santoso"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700">NIM</label>
-                  <input 
-                    required
-                    type="text"
-                    value={formData.nim}
-                    onChange={(e) => setFormData({...formData, nim: e.target.value})}
-                    placeholder="Contoh: 12345678"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-                  />
-                </div>
+              <div className="flex items-center gap-2 mb-4">
+                <input 
+                  type="checkbox" 
+                  id="anonymous"
+                  checked={formData.isAnonymous}
+                  onChange={(e) => setFormData({...formData, isAnonymous: e.target.checked})}
+                  className="w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary"
+                />
+                <label htmlFor="anonymous" className="text-sm font-medium text-gray-700 cursor-pointer">
+                  Kirim sebagai Anonim
+                </label>
               </div>
+
+              {!formData.isAnonymous && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-gray-700">Nama Lengkap</label>
+                    <input 
+                      required
+                      type="text"
+                      value={formData.nama}
+                      onChange={(e) => setFormData({...formData, nama: e.target.value})}
+                      placeholder="Contoh: Budi Santoso"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-gray-700">NIM</label>
+                    <input 
+                      required
+                      type="text"
+                      value={formData.nim}
+                      onChange={(e) => setFormData({...formData, nim: e.target.value})}
+                      placeholder="Contoh: 12345678"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                    />
+                  </div>
+                </div>
+              )}
 
               <div className="space-y-2">
                 <label className="text-sm font-bold text-gray-700">Subjek Aspirasi</label>

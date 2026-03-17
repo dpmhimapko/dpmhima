@@ -11,42 +11,56 @@ const Profile = () => {
           <motion.div 
             initial={{ scale: 0.8, opacity: 0 }}
             whileInView={{ scale: 1, opacity: 1 }}
-            className="w-64 h-64 bg-primary rounded-full flex items-center justify-center text-white text-8xl font-bold shadow-2xl"
+            className="relative w-72 h-72 flex items-center justify-center"
           >
-            H
+            <img 
+              src="https://lh3.googleusercontent.com/d/1-ARNk9ZHr1BQObGL7HybPzS-V0Z-3zkV" 
+              alt="Logo Parlemen" 
+              className="w-full h-full object-contain"
+              referrerPolicy="no-referrer"
+            />
           </motion.div>
         </div>
         <div className="flex-1 space-y-6">
-          <h2 className="text-4xl font-bold text-secondary">Makna Logo HIMAPKO</h2>
+          <h2 className="text-4xl font-bold text-secondary">Makna Logo Parlemen</h2>
           <div className="w-20 h-1 bg-primary"></div>
-          <div className="space-y-4 text-gray-600">
-            <p>Logo HIMAPKO bukan sekadar simbol visual, melainkan representasi dari nilai-nilai luhur yang kami pegang teguh:</p>
-            <ul className="space-y-4">
+          <div className="space-y-6 text-gray-600">
+            <p>Logo Parlemen Ressilience 2025/2026 merepresentasikan identitas dan semangat perjuangan kami:</p>
+            <ul className="space-y-6">
               <li className="flex gap-4">
-                <div className="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center flex-shrink-0 text-primary">
-                  <Shield className="w-6 h-6" />
-                </div>
+                <img 
+                  src="https://lh3.googleusercontent.com/d/1BRD-jvTOxPhi4AgyO1NXVH5fCSLnSJ8s" 
+                  alt="Lingkaran" 
+                  className="w-16 h-16 object-contain flex-shrink-0"
+                  referrerPolicy="no-referrer"
+                />
                 <div>
-                  <h4 className="font-bold text-secondary">Warna Merah Ati</h4>
-                  <p className="text-sm">Melambangkan keberanian, semangat yang membara, dan ketegasan dalam mengambil keputusan.</p>
+                  <h4 className="font-bold text-secondary">Lingkaran</h4>
+                  <p className="text-sm">Lingkaran yang tak bulat sempurna menjaga nyala warna, melambangkan kondisi yang tidak selalu sempurna tapi bisa menjaga isinya.</p>
                 </div>
               </li>
               <li className="flex gap-4">
-                <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0 text-secondary">
-                  <Target className="w-6 h-6" />
-                </div>
+                <img 
+                  src="https://lh3.googleusercontent.com/d/1CLxO8IRaiOhxs91wZ-AxGucW-HzaNk0o" 
+                  alt="Perisai R" 
+                  className="w-16 h-16 object-contain flex-shrink-0"
+                  referrerPolicy="no-referrer"
+                />
                 <div>
-                  <h4 className="font-bold text-secondary">Bentuk Lingkaran</h4>
-                  <p className="text-sm">Melambangkan kesatuan, kebulatan tekad, dan hubungan kekeluargaan yang tidak terputus.</p>
+                  <h4 className="font-bold text-secondary">Perisai R</h4>
+                  <p className="text-sm">Shield and sign “R” melambangkan makna ressilience yang tangguh, adaptif dan teguh</p>
                 </div>
               </li>
               <li className="flex gap-4">
-                <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0 text-blue-600">
-                  <Heart className="w-6 h-6" />
-                </div>
+                <img 
+                  src="https://lh3.googleusercontent.com/d/1TYSOZKLy9A1ZVxiZAXTMf3V4QRJIO3tN" 
+                  alt="Api" 
+                  className="w-16 h-16 object-contain flex-shrink-0"
+                  referrerPolicy="no-referrer"
+                />
                 <div>
-                  <h4 className="font-bold text-secondary">Huruf H</h4>
-                  <p className="text-sm">Representasi dari Harmoni, Humanis, dan Harapan bagi seluruh mahasiswa.</p>
+                  <h4 className="font-bold text-secondary">Api</h4>
+                  <p className="text-sm">Api menyala melambangkan semangat perjuangan, keberanian, dan daya tahan.</p>
                 </div>
               </li>
             </ul>

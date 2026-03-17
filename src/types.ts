@@ -38,6 +38,7 @@ export interface Aspiration {
   message: string;
   timestamp: string;
   status: 'new' | 'read' | 'archived';
+  isAnonymous?: boolean;
 }
 
 export interface UserProfile {
