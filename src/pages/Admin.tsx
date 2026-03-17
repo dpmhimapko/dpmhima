@@ -19,9 +19,11 @@ import {
   ShieldAlert
 } from 'lucide-react';
 import { newsService, staffService, orgService, aspirationService, userService } from '../services';
-import { News, StaffBest, Organization, Aspiration, UserProfile } from '../types';
+import { News, StaffBest, Organization, Aspiration, UserProfile, Member } from '../types';
 import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from '../firebase';
+import { INITIAL_STRUCTURE } from '../constants/structure';
+import { INITIAL_NEWS } from '../constants/news';
 
 const AdminPage = () => {
   const [isAuthorized, setIsAuthorized] = useState(false);
@@ -43,7 +45,17 @@ const AdminPage = () => {
   // Form States
   const [newsForm, setNewsForm] = useState({ title: '', content: '', imageUrl: '', author: '' });
   const [staffForm, setStaffForm] = useState({ name: '', month: 'Januari', division: '', type: 'staff' as const, imageUrl: '' });
-  const [orgForm, setOrgForm] = useState({ divisionName: '', groupPhoto: '' });
+  const [orgForm, setOrgForm] = useState({ divisionName: '', description: '', groupPhoto: '' });
+  const [editingOrgId, setEditingOrgId] = useState<string | null>(null);
+  const [memberForm, setMemberForm] = useState<Omit<Member, 'id'>>({ 
+    name: '', 
+    role: '', 
+    nim: '', 
+    instagram: '', 
+    jobDesc: '', 
+    bio: '', 
+    photoUrl: '' 
+  });
   const [aspForm, setAspForm] = useState({ nama: '', nim: '', subject: '', message: '' });
 
   useEffect(() => {
@@ -229,6 +241,19 @@ const AdminPage = () => {
             <div className="space-y-8">
               <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold">Kelola Berita</h2>
+                <button 
+                  onClick={async () => {
+                    if (confirm('Ini akan menambahkan berita contoh. Lanjutkan?')) {
+                      for (const item of INITIAL_NEWS) {
+                        await newsService.add(item);
+                      }
+                      alert('Berita berhasil diinisialisasi!');
+                    }
+                  }}
+                  className="flex items-center gap-2 px-4 py-2 bg-secondary text-white rounded-xl text-sm font-bold hover:bg-black transition-all"
+                >
+                  <RefreshCw className="w-4 h-4" /> Inisialisasi Berita
+                </button>
               </div>
               
               <form onSubmit={async (e) => {
@@ -312,7 +337,6 @@ const AdminPage = () => {
                 <button 
                   onClick={async () => {
                     if (confirm('Ini akan menambahkan struktur organisasi awal. Lanjutkan?')) {
-                      const { INITIAL_STRUCTURE } = await import('../constants/structure');
                       for (const div of INITIAL_STRUCTURE) {
                         await orgService.add(div);
                       }
@@ -327,28 +351,94 @@ const AdminPage = () => {
               <form onSubmit={async (e) => {
                 e.preventDefault();
                 await orgService.add({ ...orgForm, members: [] });
-                setOrgForm({ divisionName: '', groupPhoto: '' });
+                setOrgForm({ divisionName: '', description: '', groupPhoto: '' });
               }} className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-6 rounded-2xl">
                 <input placeholder="Nama Divisi" className="p-3 rounded-lg border" value={orgForm.divisionName} onChange={e => setOrgForm({...orgForm, divisionName: e.target.value})} required />
                 <input placeholder="URL Foto Bersama" className="p-3 rounded-lg border" value={orgForm.groupPhoto} onChange={e => setOrgForm({...orgForm, groupPhoto: e.target.value})} required />
+                <textarea placeholder="Deskripsi Singkat Divisi" className="p-3 rounded-lg border md:col-span-2" value={orgForm.description} onChange={e => setOrgForm({...orgForm, description: e.target.value})} />
                 <button className="bg-primary text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 md:col-span-2">
                   <Plus className="w-5 h-5" /> Tambah Divisi
                 </button>
               </form>
 
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {orgs.map(o => (
-                  <div key={o.id} className="p-4 border rounded-xl space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h4 className="font-bold">{o.divisionName}</h4>
-                      <button onClick={() => orgService.delete(o.id)} className="text-red-500 hover:bg-red-50 p-2 rounded-lg">
-                        <Trash2 className="w-5 h-5" />
-                      </button>
+                  <div key={o.id} className="bg-white border rounded-2xl overflow-hidden shadow-sm">
+                    <div className="p-6 border-b bg-gray-50/50 flex items-center justify-between">
+                      <div>
+                        <h4 className="text-xl font-bold text-secondary">{o.divisionName}</h4>
+                        <p className="text-xs text-gray-500 mt-1">{o.members?.length || 0} Anggota</p>
+                      </div>
+                      <div className="flex gap-2">
+                        <button 
+                          onClick={() => setEditingOrgId(editingOrgId === o.id ? null : o.id)}
+                          className="px-4 py-2 bg-white border rounded-lg text-sm font-bold hover:bg-gray-50 transition-all"
+                        >
+                          {editingOrgId === o.id ? 'Tutup Edit' : 'Kelola Anggota'}
+                        </button>
+                        <button onClick={() => orgService.delete(o.id)} className="text-red-500 hover:bg-red-50 p-2 rounded-lg">
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                      </div>
                     </div>
-                    <div className="text-xs text-gray-500">
-                      {o.members?.length || 0} Anggota
-                    </div>
-                    {/* Member management can be added here for more complexity */}
+
+                    {editingOrgId === o.id && (
+                      <div className="p-6 space-y-8">
+                        {/* Add Member Form */}
+                        <div className="bg-gray-50 p-6 rounded-2xl border border-dashed border-gray-300">
+                          <h5 className="font-bold mb-4 flex items-center gap-2">
+                            <Plus className="w-4 h-4" /> Tambah Anggota Baru
+                          </h5>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <input placeholder="Nama Lengkap" className="p-2 rounded-lg border text-sm" value={memberForm.name} onChange={e => setMemberForm({...memberForm, name: e.target.value})} />
+                            <input placeholder="Jabatan/Role" className="p-2 rounded-lg border text-sm" value={memberForm.role} onChange={e => setMemberForm({...memberForm, role: e.target.value})} />
+                            <input placeholder="NIM" className="p-2 rounded-lg border text-sm" value={memberForm.nim} onChange={e => setMemberForm({...memberForm, nim: e.target.value})} />
+                            <input placeholder="Instagram (tanpa @)" className="p-2 rounded-lg border text-sm" value={memberForm.instagram} onChange={e => setMemberForm({...memberForm, instagram: e.target.value})} />
+                            <input placeholder="URL Foto" className="p-2 rounded-lg border text-sm" value={memberForm.photoUrl} onChange={e => setMemberForm({...memberForm, photoUrl: e.target.value})} />
+                            <input placeholder="Job Description" className="p-2 rounded-lg border text-sm md:col-span-2" value={memberForm.jobDesc} onChange={e => setMemberForm({...memberForm, jobDesc: e.target.value})} />
+                            <textarea placeholder="Bio/Quotes" className="p-2 rounded-lg border text-sm md:col-span-3" value={memberForm.bio} onChange={e => setMemberForm({...memberForm, bio: e.target.value})} />
+                            <button 
+                              onClick={async () => {
+                                const updatedMembers = [...(o.members || []), memberForm];
+                                await orgService.update(o.id, { members: updatedMembers });
+                                setMemberForm({ name: '', role: '', nim: '', instagram: '', jobDesc: '', bio: '', photoUrl: '' });
+                              }}
+                              className="bg-secondary text-white py-2 rounded-lg font-bold text-sm md:col-span-3"
+                            >
+                              Simpan Anggota
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Member List */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {o.members?.map((m, idx) => (
+                            <div key={idx} className="flex items-center justify-between p-4 border rounded-xl bg-white group">
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-full bg-gray-100 overflow-hidden">
+                                  {m.photoUrl ? <img src={m.photoUrl} className="w-full h-full object-cover" /> : <Users className="w-5 h-5 m-auto mt-2 text-gray-400" />}
+                                </div>
+                                <div>
+                                  <p className="font-bold text-sm">{m.name}</p>
+                                  <p className="text-xs text-primary font-medium">{m.role}</p>
+                                </div>
+                              </div>
+                              <button 
+                                onClick={async () => {
+                                  if (confirm(`Hapus ${m.name}?`)) {
+                                    const updatedMembers = o.members.filter((_, i) => i !== idx);
+                                    await orgService.update(o.id, { members: updatedMembers });
+                                  }
+                                }}
+                                className="text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

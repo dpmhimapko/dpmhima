@@ -3,21 +3,23 @@ import { Organization } from '../types';
 export const INITIAL_STRUCTURE: Omit<Organization, 'id'>[] = [
   {
     divisionName: 'Pengurus Harian',
-    groupPhoto: 'https://picsum.photos/seed/ph/800/600',
+    description: 'Badan yang mengkoordinasikan seluruh kegiatan dan kebijakan internal organisasi DPM HIMA PKO.',
+    groupPhoto: 'https://lh3.googleusercontent.com/d/1FunSF-v3DcQmLkpnNe052-8_gcJ5hJWQ',
     members: [
-      { name: 'Adam Faizal Ristyananda Kurniawan', role: 'Ketua Umum', nim: '2306961' },
-      { name: 'Raden Mas Fiqih Nawaal Fadilah', role: 'Wakil Ketua Umum', nim: '2406953' },
-      { name: 'Gita Crysdiani', role: 'Sekretaris Umum', nim: '2303567' },
-      { name: 'Raihany Desi Putri', role: 'Sekretaris I', nim: '2406160' },
-      { name: 'Karisma Ayu Wulandari', role: 'Bendahara Umum', nim: '2300819' },
-      { name: 'Fariz Nur Khazanah', role: 'Bendahara I', nim: '2400039' },
+      { name: 'Adam Faizal Ristyananda Kurniawan', role: 'Ketua Umum', nim: '2306961', instagram: 'adamfaizal_', jobDesc: 'Bertanggung jawab atas seluruh jalannya organisasi DPM HIMA PKO.' },
+      { name: 'Raden Mas Fiqih Nawaal Fadilah', role: 'Wakil Ketua Umum', nim: '2406953', instagram: 'fiqihnawaal', jobDesc: 'Membantu Ketua Umum dalam menjalankan tugas dan koordinasi internal.' },
+      { name: 'Gita Crysdiani', role: 'Sekretaris Umum', nim: '2303567', instagram: 'gitacrysdiani', jobDesc: 'Mengelola administrasi dan persuratan organisasi.' },
+      { name: 'Raihany Desi Putri', role: 'Sekretaris I', nim: '2406160', instagram: 'raihanydesi', jobDesc: 'Membantu Sekretaris Umum dalam tugas administrasi.' },
+      { name: 'Karisma Ayu Wulandari', role: 'Bendahara Umum', nim: '2300819', instagram: 'karismaayu', jobDesc: 'Mengelola keuangan dan anggaran organisasi.' },
+      { name: 'Fariz Nur Khazanah', role: 'Bendahara I', nim: '2400039', instagram: 'fariznur', jobDesc: 'Membantu Bendahara Umum dalam pengelolaan keuangan.' },
     ]
   },
   {
     divisionName: 'Komisi',
-    groupPhoto: 'https://picsum.photos/seed/komisi/800/600',
+    description: 'Lembaga pengawasan yang memastikan setiap program kerja berjalan sesuai dengan peraturan yang berlaku.',
+    groupPhoto: 'https://lh3.googleusercontent.com/d/1KI-VGG-6ehvAKqA1GDDOCKQDwJYIEjgZ',
     members: [
-      { name: 'Ilham Maulana Rustandi', role: 'Ketua', nim: '2304607' },
+      { name: 'Ilham Maulana Rustandi', role: 'Ketua', nim: '2304607', instagram: 'ilhammr', jobDesc: 'Mengkoordinasikan tugas-tugas komisi dalam pengawasan dan legislasi.' },
       { name: 'Andhika Nur Rohim', role: 'Wakil Ketua', nim: '2403484' },
       { name: 'Awaludin Jamil', role: 'Anggota', nim: '2309458' },
       { name: 'M. Dzikra Al Faruq Nugraha', role: 'Anggota', nim: '2307114' },
@@ -36,9 +38,10 @@ export const INITIAL_STRUCTURE: Omit<Organization, 'id'>[] = [
   },
   {
     divisionName: 'Biro Hubungan Masyarakat',
-    groupPhoto: 'https://picsum.photos/seed/humas/800/600',
+    description: 'Jembatan komunikasi antara organisasi dengan mahasiswa serta pihak eksternal lainnya.',
+    groupPhoto: 'https://lh3.googleusercontent.com/d/1s5yAQZ5ZMU_X1tjk7GyefouDi1NxgjMe',
     members: [
-      { name: 'Febriyansah', role: 'Ketua', nim: '2300439' },
+      { name: 'Febriyansah', role: 'Ketua', nim: '2300439', instagram: 'febriyansah', jobDesc: 'Membangun hubungan baik dengan pihak internal maupun eksternal kampus.' },
       { name: 'Nanda Firmansyah', role: 'Wakil Ketua', nim: '2311900' },
       { name: 'Fahreza Ramdhan', role: 'Anggota', nim: '2311900' },
       { name: 'Muhammad Ahdan Haqqin', role: 'Anggota', nim: '2305537' },
@@ -49,9 +52,10 @@ export const INITIAL_STRUCTURE: Omit<Organization, 'id'>[] = [
   },
   {
     divisionName: 'Badan Legislasi',
-    groupPhoto: 'https://picsum.photos/seed/legislasi/800/600',
+    description: 'Fokus pada perumusan, pengkajian, dan penetapan peraturan-peraturan dalam lingkungan organisasi.',
+    groupPhoto: 'https://lh3.googleusercontent.com/d/1xrfF2OrO4IAoVfshEAMZJ7xI9mteIv4X',
     members: [
-      { name: 'Muhammad Hu Gardani', role: 'Ketua', nim: '2305233' },
+      { name: 'Muhammad Hu Gardani', role: 'Ketua', nim: '2305233', instagram: 'hugardani', jobDesc: 'Merumuskan dan meninjau peraturan organisasi.' },
       { name: 'Muhammad Abhinaya Putrawan', role: 'Wakil Ketua', nim: '2405388' },
       { name: 'Raden Mayanza Windriani', role: 'Anggota', nim: '2300920' },
       { name: 'M. Saabiq Faqihufiddin', role: 'Anggota', nim: '2306869' },
@@ -63,9 +67,10 @@ export const INITIAL_STRUCTURE: Omit<Organization, 'id'>[] = [
   },
   {
     divisionName: 'Biro Pengembangan Sumber Daya Manusia',
-    groupPhoto: 'https://picsum.photos/seed/psdm/800/600',
+    description: 'Bertanggung jawab dalam pengembangan potensi, karakter, dan kesejahteraan seluruh anggota organisasi.',
+    groupPhoto: 'https://lh3.googleusercontent.com/d/1RNKAC-6w66W6USCJvJnz8AJpo1gfGe8g',
     members: [
-      { name: 'Sintia Saridah Azhar', role: 'Ketua', nim: '2308119' },
+      { name: 'Sintia Saridah Azhar', role: 'Ketua', nim: '2308119', instagram: 'sintiasaridah', jobDesc: 'Mengembangkan potensi dan kesejahteraan anggota HIMA PKO.' },
       { name: 'Tiara Zahra Febrianti', role: 'Wakil Ketua', nim: '2400439' },
       { name: 'Khairani Nurul Ulfa', role: 'Anggota', nim: '2307024' },
       { name: 'Qafka Nafhisa Okta Yedi', role: 'Anggota', nim: '2309124' },

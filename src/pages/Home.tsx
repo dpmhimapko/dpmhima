@@ -8,14 +8,14 @@ const Home = () => {
     <div className="space-y-20 pb-20">
       {/* Hero Section */}
       <section className="relative h-[80vh] flex items-center justify-center overflow-hidden bg-secondary">
-        <div className="absolute inset-0 opacity-30">
+        <div className="absolute inset-0">
           <img 
-            src="https://picsum.photos/seed/himapko/1920/1080" 
+            src="https://lh3.googleusercontent.com/d/1sJQUCPBU0JzndSAM8GfAgjZOVMw7RLWV" 
             alt="Hero Background" 
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover blur-[2px] opacity-40 scale-105"
             referrerPolicy="no-referrer"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-secondary/50 to-secondary"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-secondary/60 via-secondary/40 to-secondary"></div>
         </div>
         
         <div className="relative z-10 text-center px-4 max-w-4xl">

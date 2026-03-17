@@ -5,6 +5,7 @@ export interface News {
   imageUrl: string;
   date: string;
   author: string;
+  category?: string;
 }
 
 export interface StaffBest {
@@ -22,11 +23,14 @@ export interface Member {
   photoUrl?: string;
   bio?: string;
   nim?: string;
+  instagram?: string;
+  jobDesc?: string;
 }
 
 export interface Organization {
   id: string;
   divisionName: string;
+  description?: string;
   groupPhoto: string;
   members: Member[];
 }
