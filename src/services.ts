@@ -8,11 +8,13 @@ import {
   doc, 
   updateDoc, 
   deleteDoc,
+  getDoc,
+  setDoc,
   Timestamp,
   getDocFromServer
 } from 'firebase/firestore';
 import { db, auth } from './firebase';
-import { News, StaffBest, Organization, Aspiration } from './types';
+import { News, StaffBest, Organization, Aspiration, UserProfile } from './types';
 
 // Connection test
 async function testConnection() {
@@ -95,4 +97,23 @@ export const aspirationService = {
   },
   delete: (id: string) => deleteDoc(doc(db, 'aspirations', id)),
   updateStatus: (id: string, status: Aspiration['status']) => updateDoc(doc(db, 'aspirations', id), { status })
+};
+
+export const userService = {
+  getProfile: async (uid: string) => {
+    const docSnap = await getDoc(doc(db, 'users', uid));
+    return docSnap.exists() ? (docSnap.data() as UserProfile) : null;
+  },
+  createProfile: async (profile: UserProfile) => {
+    await setDoc(doc(db, 'users', profile.uid), profile);
+  },
+  subscribeAll: (callback: (users: UserProfile[]) => void) => {
+    return onSnapshot(collection(db, 'users'), (snapshot) => {
+      callback(snapshot.docs.map(d => d.data() as UserProfile));
+    });
+  },
+  updateRole: (uid: string, role: UserProfile['role'], isApproved: boolean) => {
+    return updateDoc(doc(db, 'users', uid), { role, isApproved });
+  },
+  deleteUser: (uid: string) => deleteDoc(doc(db, 'users', uid))
 };

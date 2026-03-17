@@ -39,3 +39,13 @@ export interface Aspiration {
   timestamp: string;
   status: 'new' | 'read' | 'archived';
 }
+
+export interface UserProfile {
+  uid: string;
+  email: string;
+  displayName: string;
+  photoURL: string;
+  role: 'admin' | 'superadmin' | 'pending';
+  isApproved: boolean;
+  createdAt: string;
+}

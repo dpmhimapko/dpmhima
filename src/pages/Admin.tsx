@@ -12,24 +12,32 @@ import {
   Trophy,
   CheckCircle,
   Clock,
-  RefreshCw
+  RefreshCw,
+  Shield,
+  UserCheck,
+  UserX,
+  ShieldAlert
 } from 'lucide-react';
-import { newsService, staffService, orgService, aspirationService } from '../services';
-import { News, StaffBest, Organization, Aspiration } from '../types';
+import { newsService, staffService, orgService, aspirationService, userService } from '../services';
+import { News, StaffBest, Organization, Aspiration, UserProfile } from '../types';
 import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from '../firebase';
 
 const AdminPage = () => {
   const [isAuthorized, setIsAuthorized] = useState(false);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  const [isPending, setIsPending] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'news' | 'staff' | 'org' | 'asp'>('news');
+  const [activeTab, setActiveTab] = useState<'news' | 'staff' | 'org' | 'asp' | 'users'>('news');
   const [user, setUser] = useState<any>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   
   // Data States
   const [news, setNews] = useState<News[]>([]);
   const [staff, setStaff] = useState<StaffBest[]>([]);
   const [orgs, setOrgs] = useState<Organization[]>([]);
   const [asps, setAsps] = useState<Aspiration[]>([]);
+  const [allUsers, setAllUsers] = useState<UserProfile[]>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Form States
@@ -39,12 +47,38 @@ const AdminPage = () => {
   const [aspForm, setAspForm] = useState({ nama: '', nim: '', subject: '', message: '' });
 
   useEffect(() => {
-    const unsubAuth = onAuthStateChanged(auth, (currentUser) => {
+    const unsubAuth = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
-      if (currentUser && currentUser.email === 'aahdan298@gmail.com') {
-        setIsAuthorized(true);
+      if (currentUser) {
+        const profile = await userService.getProfile(currentUser.uid);
+        if (profile) {
+          setUserProfile(profile);
+          setIsAuthorized(profile.isApproved);
+          setIsSuperAdmin(profile.role === 'superadmin' || currentUser.email === 'aahdan298@gmail.com');
+          setIsPending(profile.role === 'pending');
+        } else {
+          // Create initial profile for new users
+          const isSuper = currentUser.email === 'aahdan298@gmail.com';
+          const newProfile: UserProfile = {
+            uid: currentUser.uid,
+            email: currentUser.email || '',
+            displayName: currentUser.displayName || 'Admin User',
+            photoURL: currentUser.photoURL || '',
+            role: isSuper ? 'superadmin' : 'pending',
+            isApproved: isSuper,
+            createdAt: new Date().toISOString()
+          };
+          await userService.createProfile(newProfile);
+          setUserProfile(newProfile);
+          setIsAuthorized(isSuper);
+          setIsSuperAdmin(isSuper);
+          setIsPending(!isSuper);
+        }
       } else {
         setIsAuthorized(false);
+        setIsSuperAdmin(false);
+        setIsPending(false);
+        setUserProfile(null);
       }
       setIsLoading(false);
     });
@@ -57,14 +91,21 @@ const AdminPage = () => {
       const unsubStaff = staffService.subscribe(setStaff);
       const unsubOrg = orgService.subscribe(setOrgs);
       const unsubAsp = aspirationService.subscribe(setAsps);
+      
+      let unsubUsers = () => {};
+      if (isSuperAdmin) {
+        unsubUsers = userService.subscribeAll(setAllUsers);
+      }
+
       return () => {
         unsubNews();
         unsubStaff();
         unsubOrg();
         unsubAsp();
+        unsubUsers();
       };
     }
-  }, [isAuthorized]);
+  }, [isAuthorized, isSuperAdmin]);
 
   const handleLogin = async () => {
     const provider = new GoogleAuthProvider();
@@ -107,18 +148,35 @@ const AdminPage = () => {
           <p className="text-gray-500 mb-8 text-sm">Khusus pengurus HIMAPKO yang terdaftar.</p>
           
           {user ? (
-            <div className="mb-6 p-4 bg-red-50 rounded-xl text-red-600 text-sm">
-              Email <strong>{user.email}</strong> tidak memiliki akses admin.
+            <div className="space-y-4">
+              {isPending ? (
+                <div className="p-6 bg-amber-50 rounded-2xl border border-amber-100 text-amber-700">
+                  <ShieldAlert className="w-10 h-10 mx-auto mb-3 opacity-50" />
+                  <p className="font-bold mb-1">Akses Tertunda</p>
+                  <p className="text-xs">Akun Anda sedang menunggu persetujuan dari Super Admin. Silakan hubungi admin utama.</p>
+                </div>
+              ) : (
+                <div className="mb-6 p-4 bg-red-50 rounded-xl text-red-600 text-sm">
+                  Email <strong>{user.email}</strong> tidak memiliki akses admin.
+                </div>
+              )}
+              
+              <button 
+                onClick={handleLogout}
+                className="w-full flex items-center justify-center gap-2 text-gray-500 hover:text-secondary text-sm font-medium transition-colors"
+              >
+                <LogOut className="w-4 h-4" /> Keluar Akun
+              </button>
             </div>
-          ) : null}
-
-          <button 
-            onClick={handleLogin}
-            className="w-full bg-white border-2 border-gray-100 text-secondary py-3 rounded-xl font-bold hover:bg-gray-50 transition-all flex items-center justify-center gap-3 shadow-sm"
-          >
-            <img src="https://www.gstatic.com/firebase/explore/google.png" className="w-5 h-5" alt="Google" />
-            Masuk dengan Google
-          </button>
+          ) : (
+            <button 
+              onClick={handleLogin}
+              className="w-full bg-white border-2 border-gray-100 text-secondary py-3 rounded-xl font-bold hover:bg-gray-50 transition-all flex items-center justify-center gap-3 shadow-sm"
+            >
+              <img src="https://www.gstatic.com/firebase/explore/google.png" className="w-5 h-5" alt="Google" />
+              Masuk dengan Google
+            </button>
+          )}
           
           <p className="mt-6 text-[10px] text-gray-400 uppercase tracking-widest">
             Authorized Personnel Only
@@ -143,6 +201,7 @@ const AdminPage = () => {
             { id: 'staff', label: 'Staff Terbaik', icon: Trophy },
             { id: 'org', label: 'Organisasi', icon: Users },
             { id: 'asp', label: 'Aspirasi', icon: MessageSquare },
+            ...(isSuperAdmin ? [{ id: 'users', label: 'Kelola Admin', icon: Shield }] : []),
           ].map((tab) => (
             <button
               key={tab.id}
@@ -411,6 +470,65 @@ const AdminPage = () => {
                     <p>Belum ada aspirasi yang masuk.</p>
                   </div>
                 )}
+              </div>
+            </div>
+          )}
+          {activeTab === 'users' && isSuperAdmin && (
+            <div className="space-y-8">
+              <h2 className="text-2xl font-bold">Manajemen Admin</h2>
+              <div className="grid grid-cols-1 gap-4">
+                {allUsers.map(u => (
+                  <div key={u.uid} className="bg-white p-6 rounded-2xl border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div className="flex items-center gap-4">
+                      <img src={u.photoURL} className="w-12 h-12 rounded-full border-2 border-gray-100" alt="" />
+                      <div>
+                        <p className="font-bold text-secondary">{u.displayName}</p>
+                        <p className="text-xs text-gray-500">{u.email}</p>
+                        <div className="flex gap-2 mt-1">
+                          <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
+                            u.role === 'superadmin' ? 'bg-purple-100 text-purple-600' : 
+                            u.role === 'admin' ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'
+                          }`}>
+                            {u.role}
+                          </span>
+                          {u.isApproved ? (
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-100 text-blue-600 font-bold uppercase">Approved</span>
+                          ) : (
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 font-bold uppercase">Pending</span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {u.email !== 'aahdan298@gmail.com' && (
+                      <div className="flex gap-2">
+                        {!u.isApproved ? (
+                          <button 
+                            onClick={() => userService.updateRole(u.uid, 'admin', true)}
+                            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-xl text-sm font-bold hover:bg-green-700 transition-all"
+                          >
+                            <UserCheck className="w-4 h-4" /> Approve
+                          </button>
+                        ) : (
+                          <button 
+                            onClick={() => userService.updateRole(u.uid, 'pending', false)}
+                            className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-xl text-sm font-bold hover:bg-amber-600 transition-all"
+                          >
+                            <UserX className="w-4 h-4" /> Revoke
+                          </button>
+                        )}
+                        <button 
+                          onClick={() => {
+                            if(confirm('Hapus user ini?')) userService.deleteUser(u.uid);
+                          }}
+                          className="p-2 text-gray-400 hover:text-primary transition-colors"
+                        >
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           )}
